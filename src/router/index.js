@@ -6,23 +6,34 @@ import AboutView from '../views/AboutView.vue'
 const routes = [
   {
     path: '/',
-    name: 'Home',
     component: HomeView
   },
   {
     path: '/about',
-    name: 'About',
     component: AboutView
   },
   {
     path: '/catalog',
-    name: 'Catalog',
     component: () => import('../views/CatalogView.vue')
   },
   {
     path: '/catalog/:id',
-    name: 'ProductDetails',
     component: () => import('../views/ProductDetails.vue')
+  },
+
+  {
+    path: '/profile',
+    component: () => import('../views/ProfileView.vue'),
+    children: [
+      {
+        path: 'info',
+        component: () => import('../views/ProfileInfo.vue')
+      },
+      {
+        path: 'settings',
+        component: () => import('../views/ProfileSettings.vue')
+      }
+    ]
   }
 ]
 
