@@ -17,13 +17,40 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 export default {
   setup() {
-    const items = ref([])      
+    const items = ref([])
     const isLoading = ref(false)
     const error = ref(null)
+
+
+    const loadItems = async () => {
+      isLoading.value = true
+      error.value = null
+
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+
+        if (!response.ok) {
+          throw new Error('Помилка сервера')
+        }
+
+        const data = await response.json()
+        items.value = data.slice(0, 10)
+
+      } catch (err) {
+        error.value = err.message
+        items.value = []
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    onMounted(() => {
+      loadItems()
+    })
 
     return {
       items,
@@ -40,7 +67,7 @@ export default {
   font-family: Arial;
 }
 
-h1 {
-  margin-bottom: 20px;
+li {
+  margin-bottom: 10px;
 }
 </style>
