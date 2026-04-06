@@ -10,9 +10,19 @@
 
     <ul v-else>
       <li v-for="item in items" :key="item.id">
-        {{ item.title }}
+        <b>{{ item.title }}</b>
+        <button @click="selectItem(item)">Деталі</button>
       </li>
     </ul>
+
+    <div v-if="selectedItem" class="details">
+      <h2>Деталі поста</h2>
+
+      <h3>{{ selectedItem.title }}</h3>
+      <p>{{ selectedItem.body }}</p>
+
+      <button @click="selectedItem = null">Закрити</button>
+    </div>
   </div>
 </template>
 
@@ -24,7 +34,7 @@ export default {
     const items = ref([])
     const isLoading = ref(false)
     const error = ref(null)
-
+    const selectedItem = ref(null) 
 
     const loadItems = async () => {
       isLoading.value = true
@@ -48,6 +58,10 @@ export default {
       }
     }
 
+    const selectItem = (item) => {
+      selectedItem.value = item
+    }
+
     onMounted(() => {
       loadItems()
     })
@@ -55,7 +69,9 @@ export default {
     return {
       items,
       isLoading,
-      error
+      error,
+      selectedItem,
+      selectItem
     }
   }
 }
@@ -69,5 +85,15 @@ export default {
 
 li {
   margin-bottom: 10px;
+}
+
+button {
+  margin-left: 10px;
+}
+
+.details {
+  margin-top: 30px;
+  padding: 15px;
+  border: 1px solid #ccc;
 }
 </style>
