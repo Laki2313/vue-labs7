@@ -2,14 +2,20 @@
   <div class="app">
     <h1>Каталог постів</h1>
 
+    <input
+      v-model="query"
+      placeholder="Пошук..."
+      class="search"
+    />
+
     <p v-if="isLoading">Завантаження...</p>
 
     <p v-else-if="error">Помилка: {{ error }}</p>
 
-    <p v-else-if="items.length === 0">Немає даних</p>
+    <p v-else-if="filteredItems.length === 0">Нічого не знайдено</p>
 
     <ul v-else>
-      <li v-for="item in items" :key="item.id">
+      <li v-for="item in filteredItems" :key="item.id">
         <b>{{ item.title }}</b>
         <button @click="selectItem(item)">Деталі</button>
       </li>
@@ -27,14 +33,23 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 export default {
   setup() {
     const items = ref([])
     const isLoading = ref(false)
     const error = ref(null)
-    const selectedItem = ref(null) 
+    const selectedItem = ref(null)
+
+    const query = ref('')
+
+  
+    const filteredItems = computed(() => {
+      return items.value.filter(item =>
+        item.title.toLowerCase().includes(query.value.toLowerCase())
+      )
+    })
 
     const loadItems = async () => {
       isLoading.value = true
@@ -71,7 +86,9 @@ export default {
       isLoading,
       error,
       selectedItem,
-      selectItem
+      selectItem,
+      query,
+      filteredItems
     }
   }
 }
@@ -81,6 +98,12 @@ export default {
 .app {
   padding: 20px;
   font-family: Arial;
+}
+
+.search {
+  margin-bottom: 20px;
+  padding: 8px;
+  width: 250px;
 }
 
 li {
